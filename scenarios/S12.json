@@ -1,0 +1,24 @@
+{
+ "id": "S12",
+ "name": "Критик всегда отклоняет → защита от зацикливания (лимит ревизий)",
+ "brief": "FMCG-бренд сравнивает инфлюенсеров и скидки при бюджете 10 млн тенге.",
+ "settings": {
+  "faults": [
+   "critic_reject"
+  ]
+ },
+ "expected": {
+  "status": "revision_limit",
+  "log_absent": [
+   {
+    "name": "simulate_strategy"
+   }
+  ],
+  "log_contains": [
+   {
+    "name": "revision_limit"
+   }
+  ]
+ },
+ "expected_text": "revision_limit после 2 ревизий; симуляция не запускалась"
+}

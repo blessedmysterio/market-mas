@@ -1,0 +1,26 @@
+{
+ "id": "S09",
+ "name": "Временный сбой симулятора → повторная попытка",
+ "brief": "Автодилер с бюджетом 50 млн тенге сравнивает рекламу и работу с лидерами мнений.",
+ "settings": {
+  "faults": [
+   "sim_flaky"
+  ]
+ },
+ "expected": {
+  "status": "completed",
+  "log_contains": [
+   {
+    "name": "simulate_strategy",
+    "status": "error",
+    "attempt": 1
+   },
+   {
+    "name": "simulate_strategy",
+    "status": "ok",
+    "attempt": 2
+   }
+  ]
+ },
+ "expected_text": "completed; первая попытка simulate_strategy — error, вторая — ok"
+}

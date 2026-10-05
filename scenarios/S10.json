@@ -1,0 +1,21 @@
+{
+ "id": "S10",
+ "name": "LLM вернула невалидный JSON → повтор с обратной связью",
+ "brief": "Банк хочет нарастить долю: посев через хабов против массовой рекламы, бюджет 30 млн тенге.",
+ "settings": {
+  "faults": [
+   "llm_garbage"
+  ]
+ },
+ "expected": {
+  "status": "completed",
+  "balanced": true,
+  "log_contains": [
+   {
+    "kind": "llm",
+    "status": "retry"
+   }
+  ]
+ },
+ "expected_text": "completed; в логе llm-вызовы со status=retry; нагрузка ≤40%"
+}

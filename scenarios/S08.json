@@ -1,0 +1,27 @@
+{
+ "id": "S08",
+ "name": "Отказ внешнего API OpenAlex → фолбэк на кэш",
+ "brief": "Бренд одежды с бюджетом 20 млн тенге: инфлюенсеры или случайная раздача пробников?",
+ "settings": {
+  "faults": [
+   "openalex_down"
+  ]
+ },
+ "expected": {
+  "status": "completed",
+  "log_contains": [
+   {
+    "name": "openalex_search",
+    "status": "error"
+   },
+   {
+    "name": "literature_cache",
+    "status": "ok"
+   }
+  ],
+  "report_contains": [
+   "[cache]"
+  ]
+ },
+ "expected_text": "completed; ошибки openalex_search в логе, источники из кэша"
+}

@@ -1,0 +1,21 @@
+{
+ "id": "S03",
+ "name": "Ценовая война vs массовая реклама (финтех)",
+ "brief": "Финтех-приложение банка с бюджетом 25 млн тенге выбирает между временной скидкой на обслуживание и массовой рекламой на ТВ.",
+ "settings": {},
+ "expected": {
+  "status": "completed",
+  "best_strategy_in": [
+   "mass_media",
+   "price_cut"
+  ],
+  "comparison": [
+   {
+    "a": "price_cut",
+    "b": "baseline",
+    "delta_sign": "+"
+   }
+  ]
+ },
+ "expected_text": "completed; сравниваются price_cut и mass_media; скидка даёт Δ>0 к baseline"
+}

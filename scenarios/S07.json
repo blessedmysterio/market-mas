@@ -1,0 +1,16 @@
+{
+ "id": "S07",
+ "name": "Запрос вне предметной области",
+ "brief": "Какая завтра погода в Астане?",
+ "settings": {},
+ "expected": {
+  "status": "out_of_scope",
+  "log_absent": [
+   {
+    "name": "simulate_strategy"
+   }
+  ],
+  "max_calls": 2
+ },
+ "expected_text": "out_of_scope; симуляция не запускалась; понятное сообщение"
+}

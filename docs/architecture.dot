@@ -1,0 +1,44 @@
+digraph G {
+  rankdir=LR; splines=spline; nodesep=0.35; ranksep=0.55;
+  graph [fontname="DejaVu Sans", fontsize=11, bgcolor="white", label="MarketMAS — архитектура (оркестратор + общая память)", labelloc=t, fontsize=14];
+  node  [fontname="DejaVu Sans", fontsize=10, shape=box, style="rounded,filled", fillcolor="#EEF3FA", color="#4C78A8"];
+  edge  [fontname="DejaVu Sans", fontsize=8, color="#555555"];
+
+  user [label="Пользователь\n(CLI: бриф)", shape=oval, fillcolor="#FFFFFF"];
+  orch [label="Orchestrator\nпланирование, маршрутизация,\nциклы ревизии, лимиты\n(без инструментов)", fillcolor="#FFE9C7", color="#C77C02"];
+
+  subgraph cluster_agents { label="Агенты-исполнители"; color="#BBBBBB"; style="rounded,dashed";
+    mr  [label="Market Researcher\n• market_lookup\n• openalex_search\n• literature_cache"];
+    sd  [label="Scenario Designer\n• strategy_catalog\n• budget_to_intensity"];
+    cr  [label="Critic (проверяющий)\n• validate_spec\n• recompute_stats\n• check_claims", fillcolor="#FBE3E3", color="#B23A3A"];
+    se  [label="Simulation Engineer\n• simulate_strategy\n• save_results"];
+    an  [label="Analyst\n• compare_strategies\n• plot_chart"];
+    rw  [label="Report Writer\n• render_markdown\n• write_file"];
+  }
+
+  subgraph cluster_ext { label="Внешние инструменты и данные"; color="#BBBBBB"; style="rounded,dashed";
+    oa  [label="OpenAlex API", shape=cylinder, fillcolor="#E8F5E9", color="#2E7D32"];
+    db  [label="SQLite: справочник\nрынка (market.db)", shape=cylinder, fillcolor="#E8F5E9", color="#2E7D32"];
+    abm [label="Агентная модель\nBA-сеть (numpy/networkx)\n= выполнение кода", shape=component, fillcolor="#E8F5E9", color="#2E7D32"];
+    fs  [label="Файлы: results.json,\nreport.md, trajectories.png", shape=folder, fillcolor="#E8F5E9", color="#2E7D32"];
+  }
+
+  llm   [label="LLM\n(OpenAI-совместимый API\nили офлайн mock)", shape=hexagon, fillcolor="#F3E8FD", color="#7B3FB5"];
+  state [label="StateStore (SQLite)\nruns · messages · artifacts\n(blackboard)", shape=cylinder, fillcolor="#FFF8E1", color="#B08900"];
+  logs  [label="JSONL-лог всех вызовов\nLLM и инструментов", shape=note, fillcolor="#FFF8E1", color="#B08900"];
+
+  user -> orch [label="бриф"];
+  orch -> user [label="RunOutcome", style=dashed];
+  orch -> mr [label="1 research_task"];
+  orch -> sd [label="2 design_task"];
+  orch -> cr [label="3 review_spec\n6 review_analysis"];
+  orch -> se [label="4 simulate_task"];
+  orch -> an [label="5 analyze_task"];
+  orch -> rw [label="7 report_task"];
+  cr -> orch [label="ReviewVerdict → ревизия\n(≤ MAX_REVISIONS)", style=dashed, color="#B23A3A", fontcolor="#B23A3A"];
+
+  mr -> oa; mr -> db; se -> abm; se -> fs; an -> fs; rw -> fs;
+  orch -> state [style=dotted, arrowhead=none];
+  {mr sd cr se an rw orch} -> llm [style=dotted, color="#7B3FB5", arrowhead=none];
+  orch -> logs [style=dotted, arrowhead=none];
+}

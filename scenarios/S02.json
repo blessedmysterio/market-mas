@@ -1,0 +1,24 @@
+{
+ "id": "S02",
+ "name": "Англоязычный бриф: FMCG, хабы vs случайный посев",
+ "brief": "We are an FMCG snack brand with a budget of 20 million tenge. Compare influencer (hub) seeding against random seeding.",
+ "settings": {},
+ "expected": {
+  "status": "completed",
+  "best_strategy_in": [
+   "hub_seeding"
+  ],
+  "spec": {
+   "budget_kzt": 20000000.0
+  },
+  "comparison": [
+   {
+    "a": "hub_seeding",
+    "b": "random_seeding",
+    "delta_sign": "+",
+    "significant": true
+   }
+  ]
+ },
+ "expected_text": "completed; бюджет распознан 20 млн; hub_seeding > random_seeding"
+}

@@ -1,0 +1,13 @@
+{
+  "_comment": "Офлайн-кэш ключевых работ по теме (используется, если OpenAlex недоступен). Реальные публикации; DOI стоит перепроверить перед цитированием.",
+  "works": [
+    {"title": "Emergence of Scaling in Random Networks", "year": 1999, "venue": "Science", "doi": "10.1126/science.286.5439.509", "tags": ["network", "scale-free", "barabasi"]},
+    {"title": "A New Product Growth for Model Consumer Durables", "year": 1969, "venue": "Management Science", "doi": "10.1287/mnsc.15.5.215", "tags": ["diffusion", "bass", "adoption"]},
+    {"title": "Maximizing the Spread of Influence through a Social Network", "year": 2003, "venue": "KDD 2003", "doi": "10.1145/956750.956769", "tags": ["influence", "seeding", "viral", "network"]},
+    {"title": "The Role of Hubs in the Adoption Process", "year": 2009, "venue": "Journal of Marketing", "doi": "10.1509/jmkg.73.2.1", "tags": ["hub", "influencer", "adoption", "seeding"]},
+    {"title": "Influentials, Networks, and Public Opinion Formation", "year": 2007, "venue": "Journal of Consumer Research", "doi": "10.1086/518527", "tags": ["influencer", "hub", "opinion", "network"]},
+    {"title": "Seeding Strategies for Viral Marketing: An Empirical Comparison", "year": 2011, "venue": "Journal of Marketing", "doi": "10.1509/jmkg.75.6.55", "tags": ["seeding", "viral", "hub", "random"]},
+    {"title": "Agent-Based Modeling in Marketing: Guidelines for Rigor", "year": 2011, "venue": "International Journal of Research in Marketing", "doi": "10.1016/j.ijresmar.2011.04.002", "tags": ["agent-based", "simulation", "marketing", "methodology"]},
+    {"title": "Decomposing the Value of Word-of-Mouth Seeding Programs: Acceleration Versus Expansion", "year": 2013, "venue": "Journal of Marketing Research", "doi": "10.1509/jmr.11.0305", "tags": ["word-of-mouth", "seeding", "value"]}
+  ]
+}

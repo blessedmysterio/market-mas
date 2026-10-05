@@ -1,0 +1,23 @@
+{
+ "id": "S11",
+ "name": "«Галлюцинация» аналитика → критик ловит расхождение",
+ "brief": "Телеком-оператор: что лучше — инфлюенсеры-хабы или случайный посев? Бюджет 30 млн тенге.",
+ "settings": {
+  "faults": [
+   "analyst_hallucinate"
+  ]
+ },
+ "expected": {
+  "status": "completed",
+  "min_revisions": {
+   "analysis": 1
+  },
+  "log_contains": [
+   {
+    "agent": "analyst",
+    "name": "revise_analysis"
+   }
+  ]
+ },
+ "expected_text": "completed после ревизии анализа; критик отклонил неверное Δ"
+}

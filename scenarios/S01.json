@@ -1,0 +1,26 @@
+{
+ "id": "S01",
+ "name": "Типовой: хабы vs случайный посев vs реклама (телеком)",
+ "brief": "Мы мобильный оператор в Казахстане. Бюджет 30 млн тенге. Что эффективнее для роста доли: посев через инфлюенсеров-хабов, случайный сэмплинг или массовая реклама?",
+ "settings": {},
+ "expected": {
+  "status": "completed",
+  "best_strategy_in": [
+   "hub_seeding"
+  ],
+  "balanced": true,
+  "comparison": [
+   {
+    "a": "hub_seeding",
+    "b": "random_seeding",
+    "delta_sign": "+",
+    "significant": true
+   }
+  ],
+  "report_contains": [
+   "## Источники",
+   "## Проверка критиком"
+  ]
+ },
+ "expected_text": "completed; лучшая — hub_seeding; хабы > случайного посева (значимо); нагрузка ≤40%"
+}

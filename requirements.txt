@@ -1,0 +1,7 @@
+numpy>=1.26
+scipy>=1.11
+networkx>=3.2
+pydantic>=2.5
+matplotlib>=3.8
+python-dotenv>=1.0
+pytest>=8.0

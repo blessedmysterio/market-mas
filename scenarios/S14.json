@@ -1,0 +1,13 @@
+{
+ "id": "S14",
+ "name": "Лимит числа шагов",
+ "brief": "Оператор связи сравнивает инфлюенсеров и рекламу, бюджет 30 млн тенге.",
+ "settings": {
+  "max_steps": 10
+ },
+ "expected": {
+  "status": "step_limit",
+  "message_contains": "лимит шагов"
+ },
+ "expected_text": "step_limit на 11-м шаге; понятное сообщение"
+}
