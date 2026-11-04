@@ -19,7 +19,9 @@ def openalex_search(query: str, n: int, url: str, timeout_s: float, mailto: str 
         params["mailto"] = mailto
     full = url + "?" + urllib.parse.urlencode(params)
     try:
-        with urllib.request.urlopen(full, timeout=timeout_s) as r:
+        from ..llm import USER_AGENT
+        req = urllib.request.Request(full, headers={"User-Agent": USER_AGENT, "Accept": "application/json"})
+        with urllib.request.urlopen(req, timeout=timeout_s) as r:
             data = json.loads(r.read().decode())
     except Exception as e:  # noqa: BLE001 — любая сетевая ошибка → retryable
         raise ToolError(f"OpenAlex: {type(e).__name__}: {e}") from e

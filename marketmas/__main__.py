@@ -122,8 +122,13 @@ def _llm_check() -> int:
     except LLMError as e:
         print(f"\nОШИБКА: {e}")
         msg = str(e)
-        if "401" in msg or "403" in msg:
-            print("Подсказка: неверный или просроченный LLM_API_KEY.")
+        if "1010" in msg or "1020" in msg:
+            print("Подсказка: запрос заблокировал Cloudflare провайдера (код 1010/1020) — обычно из-за VPN, прокси\n"
+                  "или сети, которую провайдер не пускает. Попробуйте другую сеть или отключите VPN.")
+        elif "401" in msg or "invalid_api_key" in msg or "Invalid API Key" in msg:
+            print("Подсказка: неверный или удалённый LLM_API_KEY — создайте новый ключ и вставьте в .env.")
+        elif "403" in msg:
+            print("Подсказка: доступ запрещён — проверьте ключ и не блокирует ли провайдер вашу сеть/регион.")
         elif "404" in msg or "model" in msg.lower():
             print("Подсказка: проверьте LLM_MODEL — такой модели у провайдера нет (список моделей — в консоли провайдера).")
         elif "Сеть" in msg:

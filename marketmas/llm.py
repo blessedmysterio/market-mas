@@ -17,6 +17,9 @@ from typing import Callable
 from .config import Settings
 
 
+USER_AGENT = "market-mas/1.0 (multi-agent marketing simulation; +https://github.com/blessedmysterio/market-mas)"
+
+
 class LLMError(RuntimeError):
     pass
 
@@ -72,7 +75,9 @@ class OpenAICompatibleLLM(BaseLLM):
         req = urllib.request.Request(
             self.settings.llm_base_url.rstrip("/") + "/chat/completions",
             data=json.dumps(body).encode(),
-            headers={"Content-Type": "application/json",
+            headers={"Content-Type": "application/json", "Accept": "application/json",
+                     # Cloudflare перед некоторыми API (Groq) отклоняет подпись по умолчанию «Python-urllib» → 403 / 1010
+                     "User-Agent": USER_AGENT,
                      "Authorization": f"Bearer {self.settings.llm_api_key or 'none'}"},
             method="POST",
         )
