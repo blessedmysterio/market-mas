@@ -38,6 +38,7 @@ def main(argv: list[str] | None = None) -> int:
     sh.add_argument("run_id")
 
     sub.add_parser("agents", help="Таблица агентов")
+    sub.add_parser("llm-check", help="Проверить подключение к LLM из .env")
 
     a = ap.parse_args(argv)
 
@@ -83,6 +84,9 @@ def main(argv: list[str] | None = None) -> int:
             print(f"  [{m['step']:02d}] {m['sender']:>19} → {m['recipient']:<19} {m['type']:<7} {m['payload_type']}")
         return 0
 
+    if a.cmd == "llm-check":
+        return _llm_check()
+
     if a.cmd == "agents":
         from .agents.analyst import Analyst
         from .agents.critic import Critic
@@ -97,6 +101,37 @@ def main(argv: list[str] | None = None) -> int:
             print(f"| {cls.name} | {cls.role} | {cls.inputs} | {cls.outputs} | {tools} | {cls.done_when} |")
         return 0
     return 1
+
+
+def _llm_check() -> int:
+    import time
+    from .llm import LLMError, make_llm
+    s = Settings()
+    print(f"Провайдер: {s.llm_provider}")
+    if s.llm_provider == "mock":
+        print("Сейчас включён офлайн-режим (mock). Чтобы подключить модель, задайте в .env:\n"
+              "  LLM_PROVIDER=openai\n  LLM_BASE_URL=...\n  LLM_API_KEY=...\n  LLM_MODEL=...")
+        return 1
+    print(f"URL:       {s.llm_base_url}\nМодель:    {s.llm_model}\nКлюч:      {'задан' if s.llm_api_key else 'НЕ задан'}")
+    try:
+        llm = make_llm(s)
+        t0 = time.perf_counter()
+        text, usage = llm.chat("Ответь JSON-объектом.",
+                               'Верни {"status": "ok", "model": "<как тебя зовут>"}')
+        dt = time.perf_counter() - t0
+    except LLMError as e:
+        print(f"\nОШИБКА: {e}")
+        msg = str(e)
+        if "401" in msg or "403" in msg:
+            print("Подсказка: неверный или просроченный LLM_API_KEY.")
+        elif "404" in msg or "model" in msg.lower():
+            print("Подсказка: проверьте LLM_MODEL — такой модели у провайдера нет (список моделей — в консоли провайдера).")
+        elif "Сеть" in msg:
+            print("Подсказка: нет соединения с LLM_BASE_URL (интернет, VPN, адрес; для Ollama — запущен ли `ollama serve`).")
+        return 2
+    print(f"\nОтвет за {dt:.1f} с: {text.strip()[:200]}\nТокены: {usage}")
+    print("\nПодключение работает. Запустите любой бриф: python -m marketmas run \"...\"")
+    return 0
 
 
 def _tools_of(cls):

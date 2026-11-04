@@ -60,11 +60,24 @@ class Critic(Agent):
 
         verdict = self.think({"target": target, "tool_findings": issues, "payload": payload}, ReviewVerdict, heuristic,
                              label=f"review_{target}")
-        # Жёсткое правило: LLM не может одобрить то, что провалило детерминированную проверку
-        if errors and verdict.approved:
-            verdict.approved = False
-            verdict.issues = [Issue(**i) for i in issues]
-            verdict.comment += " [одобрение отменено: валидатор нашёл ошибки]"
+        # Решение «одобрить / вернуть» принимает детерминированная проверка, а не LLM:
+        # - LLM не может одобрить то, что провалило валидатор;
+        # - LLM не может отклонить без ошибки, найденной инструментом (иначе ревизии без причины).
+        # Ошибки валидатора всегда передаются автору с предложенным исправлением.
+        tool_issues = [Issue(**i) for i in issues]
+        tool_keys = {(i.field, i.message) for i in tool_issues}
+        llm_extra = [i for i in verdict.issues if (i.field, i.message) not in tool_keys]
+        for i in llm_extra:
+            if i.severity == "error":
+                i.severity = "warning"  # мнение модели — предупреждение, не блокер
+        verdict.issues = tool_issues + llm_extra
+        decided = not errors
+        if verdict.approved != decided:
+            verdict.comment += (" [одобрение отменено: валидатор нашёл ошибки]" if not decided
+                                else " [отклонение LLM без подтверждённой ошибки → предупреждение]")
+        verdict.approved = decided
         if forced:
             verdict.approved = False
+            if not any(i.field == "forced" for i in verdict.issues):
+                verdict.issues.append(Issue(severity="error", field="forced", message="Внедрённый отказ: критик отклоняет всегда"))
         return "ReviewVerdict", verdict

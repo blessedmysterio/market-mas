@@ -93,7 +93,8 @@ class Agent:
         Если все попытки неудачны — детерминированный фолбэк (heuristic) и запись status=fallback."""
         system = (self.system_prompt + "\n\nОтвечай ТОЛЬКО JSON-объектом по схеме:\n"
                   + json.dumps(schema.model_json_schema(), ensure_ascii=False))
-        user = json.dumps(task, ensure_ascii=False, default=str)
+        # В модель уходит сжатая версия задачи: длинные массивы чисел → сводка (экономия токенов)
+        user = json.dumps(_compact_for_llm(task), ensure_ascii=False, default=str)
         mock = lambda: heuristic().model_dump_json()  # noqa: E731
         attempts = 1 + self.s.llm_retries
         feedback = ""
@@ -121,6 +122,9 @@ class Agent:
 
 def _extract_json(text: str) -> str:
     text = text.strip()
+    # reasoning-модели (deepseek-r1, qwen3) пишут рассуждения в <think>…</think> перед ответом
+    if "</think>" in text:
+        text = text.split("</think>", 1)[1].strip()
     if text.startswith("```"):
         text = text.strip("`")
         text = text[text.find("{"):]
@@ -128,6 +132,19 @@ def _extract_json(text: str) -> str:
     if start == -1 or end == -1:
         raise ValueError("В ответе нет JSON-объекта")
     return text[start: end + 1]
+
+
+def _compact_for_llm(obj: Any) -> Any:
+    """Для промпта: числовые массивы длиннее 6 → {n, mean, min, max}; структура и прочие списки сохраняются."""
+    if isinstance(obj, BaseModel):
+        obj = obj.model_dump(mode="json")
+    if isinstance(obj, dict):
+        return {k: _compact_for_llm(v) for k, v in obj.items()}
+    if isinstance(obj, (list, tuple)):
+        if len(obj) > 6 and all(isinstance(x, (int, float)) and not isinstance(x, bool) for x in obj):
+            return {"n": len(obj), "mean": round(sum(obj) / len(obj), 5), "min": round(min(obj), 5), "max": round(max(obj), 5)}
+        return [_compact_for_llm(x) for x in obj]
+    return obj
 
 
 def _summarize(obj: Any) -> Any:
